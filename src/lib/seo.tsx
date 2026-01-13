@@ -46,6 +46,7 @@ export async function generatePageMetadata(props: PageProps, parent: ResolvingMe
 			type: "website",
 			url: t("title"), // optional, can fallback to current page URL
 			images: t("image") ? [{ url: t("image") }] : undefined,
+			siteName: "J-Global Business School",
 		},
 
 		// Twitter card metadata
