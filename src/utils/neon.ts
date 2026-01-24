@@ -1,15 +1,15 @@
-// lib/db.ts
-import { Client } from "@neondatabase/serverless";
+import { Client, QueryResult, QueryResultRow } from "@neondatabase/serverless";
 
-export const query = async (text: string, params?: unknown[]) => {
+export async function query<T extends QueryResultRow = QueryResultRow>(text: string, params?: unknown[]): Promise<QueryResult<T>> {
 	const client = new Client({
-		connectionString: process.env.NEON_CONNECTION_STRING,
+		connectionString: process.env.DATABASE_URL,
 	});
 
 	await client.connect();
+
 	try {
-		return await client.query(text, params);
+		return await client.query<T>(text, params);
 	} finally {
 		await client.end();
 	}
-};
+}

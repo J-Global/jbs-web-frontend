@@ -13,6 +13,13 @@
         "contact": "Googleカレンダーに事前に追加いただくか、開始時間になりましたらZoomリンクよりご参加ください\nご不明点や予約内容の変更をご希望の場合は、下記メールアドレスまでお気軽にご連絡ください。",
         "supportEmail": "support@j-global.com",
         "addToCalendar": "Googleカレンダーに追加",
-        "teamName": "J-Globalチーム"
+        "teamName": "J-Globalチーム",
+        "calendar": {
+            "addToCalendar": "カレンダーに追加:",
+            "google": "Google カレンダー",
+            "outlook": "Outlook / Teams",
+            "apple": "Apple カレンダー",
+            "appleHint": "Apple カレンダーをご利用の方は、添付ファイルを開いてください"
+        }
     }
 }

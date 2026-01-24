@@ -13,6 +13,13 @@
         "contact": "Feel free to get in touch. If you need to make any changes to your booking, please email us at",
         "supportEmail": "support@j-global.com",
         "addToCalendar": "Add to Google Calendar",
-        "teamName": "J-Global Team"
+        "teamName": "J-Global Team",
+        "calendar": {
+            "addToCalendar": "Add to calendar:",
+            "google": "Google Calendar",
+            "outlook": "Outlook / Teams",
+            "apple": "Apple Calendar",
+            "appleHint": "Apple Calendar users: open the attached file"
+        }
     }
 }

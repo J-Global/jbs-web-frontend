@@ -1,0 +1,24 @@
+{
+    "title": "Contact Us",
+    "intro": "If you have any questions or requests regarding J-Global Business School, please contact us using the form below. Our professional staff will get back to you as soon as possible.",
+    "phone": {
+        "label": "Phone",
+        "value": "03-3281-4303"
+    },
+    "email": {
+        "label": "Email",
+        "value": "support@j-global.com"
+    },
+    "form": {
+        "title": "Send us a message",
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "email": "Email Address",
+        "message": "Message",
+        "send": "Send Message",
+        "sending": "Sending...",
+        "success": "Thank you for contacting us. We will get back to you shortly.",
+        "error": "Something went wrong. Please try again later.",
+        "thanks": "We usually respond within 24 hours."
+    }
+}

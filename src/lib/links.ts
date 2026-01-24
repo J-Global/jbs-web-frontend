@@ -12,10 +12,18 @@ export const LINKS: Record<string, LinkEntry> = {
 			en: "https://fms.j-globalbizschool.com/fmi/webd/IBSApplication?script=login&param=en",
 		},
 	},
-	freeTrial: {
-		url: "https://fms.j-globalbizschool.com/fmi/webd/IBSApplication?script=trial",
+
+	fmp: {
+		url: "https://fms.j-globalbizschool.com/fmi/webd/IBSApplication",
 		langUrls: {
-			en: "https://fms.j-globalbizschool.com/fmi/webd/IBSApplication?script=trialEn",
+			en: "https://fms.j-globalbizschool.com/fmi/webd/IBSApplication?script=homepageEn",
+		},
+	},
+
+	freeTrial: {
+		url: "https://fms.j-globalbizschool.com/fmi/webd/IBSApplication?script=twoweekstrial",
+		langUrls: {
+			en: "https://fms.j-globalbizschool.com/fmi/webd/IBSApplication?script=twoweekstrialEn",
 		},
 	},
 	freeCoaching: {

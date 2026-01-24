@@ -6,12 +6,12 @@ export default function robots(): MetadataRoute.Robots {
 			{
 				userAgent: "GPTBot",
 				allow: "/",
-				disallow: "/api/",
+				disallow: ["/api/", "/admin"], // block API and admin
 			},
 			{
 				userAgent: "*",
 				allow: "/",
-				disallow: "/api/",
+				disallow: ["/api/", "/admin"], // block API and admin for all bots
 			},
 		],
 		sitemap: "https://www.j-globalbizschool.com/sitemap.xml",

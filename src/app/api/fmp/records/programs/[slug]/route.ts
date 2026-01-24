@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 let cachedToken: string | null = null;
 let tokenExpiresAt = 0;
 
+//
 const FILEMAKER_API_VERSION = "v1";
 
 async function getToken() {

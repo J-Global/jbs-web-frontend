@@ -179,7 +179,7 @@ export default function FreeCoachingClient() {
 
 									{/* Booking CTA (under image on mobile) */}
 									<div className="block lg:hidden">
-										<div className="bg-linear-to-br from-white to-gray-50 border border-gray-200 rounded-3xl shadow-xl p-8 space-y-8 mt-6">
+										<div className="bg-linear-to-br from-white to-gray-50 border border-gray-200 rounded-3xl shadow-xl  p-4 sm:p-8 space-y-8 mt-6">
 											<div className="space-y-4 text-center">
 												<h1 className="text-3xl font-bold text-gray-900 leading-tight">{t("step1.title")}</h1>
 												<p className="text-gray-600 text-lg leading-relaxed">{t("step1.intro_p")}</p>
@@ -287,7 +287,7 @@ export default function FreeCoachingClient() {
 								</div>
 
 								{/* Time Slots */}
-								<div className="w-full lg:w-2/3 relative bg-white/70 rounded-2xl p-6 sm:p-8 shadow-inner border border-gray-100 backdrop-blur-sm min-h-60 sm:min-h-[280px] flex items-center justify-center">
+								<div className="w-full lg:w-2/3 relative bg-white/70 rounded-2xl p-0 sm:p-8 shadow-inner border border-gray-100 backdrop-blur-sm min-h-60 sm:min-h-[280px] flex items-center justify-center">
 									{loading && (
 										<div className="absolute inset-0 flex items-center justify-center bg-white/70 backdrop-blur-md rounded-2xl z-10">
 											<div className="w-10 h-10 sm:w-12 sm:h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
@@ -329,7 +329,7 @@ export default function FreeCoachingClient() {
 
 					{/* Step 3: Personal Info Form */}
 					{step === 3 && (
-						<motion.div key="step3" initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -40 }} transition={{ duration: 0.5, ease: "easeOut" }} className="relative p-10 bg-white/90 rounded-3xl shadow-xl border border-gray-200 max-w-2xl mx-auto">
+						<motion.div key="step3" initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -40 }} transition={{ duration: 0.5, ease: "easeOut" }} className="relative p-4 sm:p-10 bg-white/90 rounded-3xl shadow-xl border border-gray-200 max-w-2xl mx-auto">
 							<div className="text-center mb-8">
 								<h2 className="text-3xl font-bold text-gray-800">
 									{t("step3.title_1")} <span className="text-blue-600">{t("step3.title_2_span")}</span>

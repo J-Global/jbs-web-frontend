@@ -2,7 +2,7 @@ import { MetadataRoute } from "next";
 
 const BASE_URL = "https://www.j-globalbizschool.com";
 
-const staticPages = ["", "privacy-policy", "company-profile", "free-coaching"];
+const staticPages = ["", "privacy-policy", "company-profile", "free-coaching", "for-hr-managers", "contact-us"];
 
 const programPages = ["programs/global-communication/C01", "programs/global-communication/C02", "programs/global-communication/C03", "programs/global-communication/C04", "programs/global-communication/E-AU01", "programs/global-teamwork/L12", "programs/global-teamwork/C06", "programs/global-teamwork/F01", "programs/global-teamwork/F08", "programs/global-teamwork/C09", "programs/global-leadership/L01", "programs/global-leadership/L08", "programs/global-leadership/I01", "programs/global-leadership/L02-2", "programs/global-leadership/L03-2"];
 
