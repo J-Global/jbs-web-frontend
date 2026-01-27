@@ -113,11 +113,24 @@ Zoom link: ${userZoomLink || ""}`,
 		// Insert booking with new columns
 		const bookingResult = await query<{ id: string; cancellation_token: string }>(
 			`INSERT INTO jbs.bookings
-      (session_id, first_name, last_name, email, phone_number, message, event_date, 
-       google_calendar_event_id, zoom_meeting_id, zoom_join_url, status, created_at)
-      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)
-      RETURNING id, cancellation_token`,
-			[sessionId, firstName, lastName, email, phone || "", message || "", start.toISOString(), responseEvent.data.id, String(meeting.id), userZoomLink, "confirmed", new Date().toISOString()],
+  (session_id, first_name, last_name, email, phone_number, message, event_date, 
+   google_calendar_event_id, zoom_meeting_id, zoom_join_url, status, created_at)
+  VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)
+  RETURNING id, cancellation_token`,
+			[
+				sessionId,
+				firstName,
+				lastName,
+				email,
+				phone || "",
+				message || "",
+				start.toISOString(),
+				responseEvent.data.id, // $8 - google_calendar_event_id
+				String(meeting.id), // $9 - zoom_meeting_id
+				userZoomLink, // $10 - zoom_join_url
+				"confirmed", // $11 - status
+				new Date().toISOString(), // $12 - created_at
+			],
 		);
 
 		const cancellationToken = bookingResult.rows[0].cancellation_token;
