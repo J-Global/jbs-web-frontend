@@ -179,7 +179,7 @@ export default function FreeCoachingClient() {
 
 									{/* Booking CTA (under image on mobile) */}
 									<div className="block lg:hidden">
-										<div className="bg-linear-to-br from-white to-gray-50 border border-gray-200 rounded-3xl shadow-xl  p-4 sm:p-8 space-y-8 mt-6">
+										<div className="bg-linear-to-br from-white to-gray-50 border border-gray-200 rounded-3xl shadow-xl p-8 space-y-8 mt-6">
 											<div className="space-y-4 text-center">
 												<h1 className="text-3xl font-bold text-gray-900 leading-tight">{t("step1.title")}</h1>
 												<p className="text-gray-600 text-lg leading-relaxed">{t("step1.intro_p")}</p>
@@ -255,6 +255,7 @@ export default function FreeCoachingClient() {
 					)}
 
 					{/* Step 2: Date & Time */}
+					{/* Step 2: Date & Time */}
 					{step === 2 && (
 						<motion.div key="step2" initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -40 }} transition={{ duration: 0.5, ease: "easeOut" }} className="relative p-6 sm:p-8 md:p-10 bg-linear-to-br from-white/90 to-blue-50/80 backdrop-blur-md rounded-3xl shadow-xl border border-blue-100">
 							{/* Header */}
@@ -268,40 +269,39 @@ export default function FreeCoachingClient() {
 							{/* Layout */}
 							<div className="flex flex-col lg:flex-row gap-6 sm:gap-10 items-start">
 								{/* Calendar */}
-								<div className="w-full max-w-full md:max-w-md  bg-white/80 rounded-2xl p-6 shadow-lg border border-gray-100 backdrop-blur-md flex flex-col items-center text-center">
+								<div className="w-full max-w-full md:max-w-sm bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-gray-200 flex flex-col items-center text-center">
 									<DayPicker
 										mode="single"
 										selected={selectedDate}
 										onSelect={(date) => setSelectedDate(date || undefined)}
 										disabled={{ before: new Date() }}
-										className="rounded-xl text-gray-800"
+										locale={dateFnsLocale}
 										modifiersClassNames={{
-											selected: "bg-blue-600 text-white rounded-lg shadow-md",
-											today: "font-semibold border border-blue-300 rounded-lg",
+											selected: "bg-[#d74100] text-white rounded-lg shadow-md",
+											today: "font-bold underline text-[#d74100]",
 										}}
-										// Accessibility translation
+										className="w-full rounded-xl text-gray-800"
 										captionLayout="dropdown"
 										aria-label={t("step2.day_picker_aria_label")}
-										locale={dateFnsLocale} // <-- dynamically set locale
 									/>
 								</div>
 
 								{/* Time Slots */}
-								<div className="w-full lg:w-2/3 relative bg-white/70 rounded-2xl p-0 sm:p-8 shadow-inner border border-gray-100 backdrop-blur-sm min-h-60 sm:min-h-[280px] flex items-center justify-center">
+								<div className="w-full lg:w-2/3 relative bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-gray-200 flex flex-col items-center justify-center min-h-[240px] sm:min-h-[280px]">
 									{loading && (
-										<div className="absolute inset-0 flex items-center justify-center bg-white/70 backdrop-blur-md rounded-2xl z-10">
-											<div className="w-10 h-10 sm:w-12 sm:h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+										<div className="absolute inset-0 flex items-center justify-center bg-white/70 rounded-3xl z-10">
+											<div className="w-10 h-10 sm:w-12 sm:h-12 border-4 border-[#d74100] border-t-transparent rounded-full animate-spin"></div>
 										</div>
 									)}
 
 									{!loading && selectedDate ? (
 										<div className="w-full space-y-4 sm:space-y-6">
-											{!times || times.length === 0 ? (
-												<p className="text-gray-500 text-center text-base sm:text-lg">{t("step2.no_slots")}</p>
+											{times.length === 0 ? (
+												<p className="text-gray-500 text-center text-sm sm:text-base">{t("step2.no_slots")}</p>
 											) : (
-												<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4">
-													{times.map((time, index) => (
-														<motion.button key={index} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={() => setSelectedTime(time)} className={`px-3 sm:px-4 py-2 sm:py-3 rounded-xl border font-medium transition-all duration-300 text-xs sm:text-sm md:text-base ${selectedTime === time ? "bg-blue-600 text-white shadow-lg" : "bg-white/80 border-gray-300 hover:border-blue-400 hover:bg-blue-50"}`}>
+												<div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
+													{times.map((time) => (
+														<motion.button key={time} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={() => setSelectedTime(time)} className={`py-3 px-2 sm:px-3 text-sm rounded-xl border-2 font-bold transition-all duration-300 ${selectedTime === time ? "border-[#d74100] bg-orange-50 text-[#d74100] shadow-md" : "border-gray-100 hover:border-gray-300 text-gray-600 bg-white/80"}`}>
 															{time}
 														</motion.button>
 													))}
@@ -309,7 +309,7 @@ export default function FreeCoachingClient() {
 											)}
 										</div>
 									) : (
-										!loading && <p className="text-gray-500 text-center text-base sm:text-lg">{t("step2.select_date_prompt")}</p>
+										!loading && <p className="text-gray-500 text-center text-sm sm:text-base">{t("step2.select_date_prompt")}</p>
 									)}
 								</div>
 							</div>
@@ -329,7 +329,7 @@ export default function FreeCoachingClient() {
 
 					{/* Step 3: Personal Info Form */}
 					{step === 3 && (
-						<motion.div key="step3" initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -40 }} transition={{ duration: 0.5, ease: "easeOut" }} className="relative p-4 sm:p-10 bg-white/90 rounded-3xl shadow-xl border border-gray-200 max-w-2xl mx-auto">
+						<motion.div key="step3" initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -40 }} transition={{ duration: 0.5, ease: "easeOut" }} className="relative p-10 bg-white/90 rounded-3xl shadow-xl border border-gray-200 max-w-2xl mx-auto">
 							<div className="text-center mb-8">
 								<h2 className="text-3xl font-bold text-gray-800">
 									{t("step3.title_1")} <span className="text-blue-600">{t("step3.title_2_span")}</span>
@@ -377,7 +377,7 @@ export default function FreeCoachingClient() {
 
 									{/* Phone Input Wrapper Fix */}
 									<div className="border border-gray-300 phone-wrapper rounded-2xl hover:border-blue-400 focus-within:ring-2 focus-within:ring-blue-500 transition-all">
-										<PhoneInput defaultCountry="jp" className="w-full rounded-2xl p-3" inputClassName="!rounded-xl !p-3 !border-none !focus:outline-none !text-base" />
+										<PhoneInput value={formData.phone} defaultCountry="jp" onChange={(phone) => setFormData({ ...formData, phone })} className="w-full rounded-2xl p-3" inputClassName="!rounded-xl !p-3 !border-none !focus:outline-none !text-base" />
 									</div>
 								</div>
 
@@ -421,9 +421,6 @@ export default function FreeCoachingClient() {
 								.
 							</p>
 							<p className="text-gray-500 text-sm">{t("step4.p_confirmation_email")}</p>
-							<a href={`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(t("step4.calendar_event_name"))}&dates=${format(selectedDate!, "yyyyMMdd")}T${selectedTime?.replace(":", "")}00Z/${format(selectedDate!, "yyyyMMdd")}T${selectedTime?.replace(":", "")}00Z&details=${encodeURIComponent(t("step4.calendar_event_details"))}&location=${encodeURIComponent(t("step4.calendar_event_location"))}`} target="_blank" rel="noopener noreferrer" className="inline-block px-8 py-3 bg-blue-600 text-white font-semibold rounded-xl shadow-lg hover:bg-blue-700 transition-all duration-200">
-								{t("step4.button_google_calendar")}
-							</a>
 						</motion.div>
 					)}
 				</AnimatePresence>

@@ -1,3 +1,4 @@
+// app/api/admin/bookings/route.ts
 import { cookies } from "next/headers";
 import { query } from "@/utils/neon";
 
@@ -17,6 +18,14 @@ export async function GET() {
 			phone_number,
 			message,
 			event_date,
+			status,
+			cancellation_token,
+			google_calendar_event_id,
+			zoom_meeting_id,
+			zoom_join_url,
+			original_booking_id,
+			rescheduled_at,
+			cancelled_at,
 			created_at
 		FROM jbs.bookings
 		ORDER BY event_date DESC
