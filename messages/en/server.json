@@ -1,15 +1,19 @@
 {
     "email": {
-        "subject": "Your Free Coaching Session is Confirmed",
-        "header": "Thanks for Booking Free Coaching",
+        "subject": "Your Coaching Session is Confirmed",
+        "header": "Thanks for Booking Coaching",
+        "badge": "Confirmed",
         "hi": "Hi {name},",
         "thanks": "Thanks for booking! You're all set now.",
         "seeYou": "See you on {date} at {time} (JST).",
         "serviceBooked": "Service booked",
-        "serviceName": "Free Coaching",
+        "serviceName": "Coaching",
         "zoomLink": "Zoom link",
         "staff": "Staff",
         "staffName": "Jonathan Lynch",
+        "platform": "Platform",
+        "platformValue": "Zoom Video Conference",
+        "rescheduleText": "Check or reschedule your booking",
         "contact": "Feel free to get in touch. If you need to make any changes to your booking, please email us at",
         "supportEmail": "support@j-global.com",
         "addToCalendar": "Add to Google Calendar",
@@ -20,6 +24,20 @@
             "outlook": "Outlook / Teams",
             "apple": "Apple Calendar",
             "appleHint": "Apple Calendar users: open the attached file"
-        }
+        },
+        "footerWebsite": "Official Website",
+        "footerPrivacy": "Privacy Policy",
+        "footerCopyright": "Empowering global leaders.",
+        "dateTimeLabel": "Date & Time",
+        "cancelledHeader": "Booking Cancelled",
+        "cancelledIntro": "The following session has been cancelled:",
+        "cancelledAction": "If you wish to book again, please visit our website.",
+        "cancelledSubject": "Your Coaching Session is Cancelled",
+        "rescheduledSubject": "Your Coaching Session Has Been Rescheduled",
+        "rescheduledHeader": "Booking Rescheduled",
+        "rescheduledIntro": "Your coaching session has been successfully rescheduled.",
+        "originalDate": "Original Date",
+        "newDate": "New Date",
+        "changeBooking": "Change Booking"
     }
 }

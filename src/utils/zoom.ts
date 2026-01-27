@@ -136,3 +136,29 @@ export async function createZoomMeeting(topic: string, startTime: Date, duration
 
 	return { meeting, registrantLinks };
 }
+
+/**
+ * Delete a Zoom meeting
+ */
+export async function deleteZoomMeeting(meetingId: string): Promise<void> {
+	const token = await getZoomToken();
+
+	try {
+		const res = await fetch(`https://api.zoom.us/v2/meetings/${meetingId}`, {
+			method: "DELETE",
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		});
+
+		if (!res.ok) {
+			const text = await res.text();
+			throw new Error(`Failed to delete Zoom meeting: ${res.status} ${res.statusText} - ${text}`);
+		}
+
+		console.log(`✅ Deleted Zoom meeting: ${meetingId}`);
+	} catch (error) {
+		console.error(`❌ Failed to delete Zoom meeting ${meetingId}:`, error);
+		throw new Error(`Failed to delete Zoom meeting: ${error instanceof Error ? error.message : "Unknown error"}`);
+	}
+}

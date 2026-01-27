@@ -1,18 +1,22 @@
 {
     "email": {
         "subject": "『J-Global Business School』コーチングセッション予約完了のお知らせ",
-        "header": "無料コーチングのご予約ありがとうございます",
+        "header": "コーチングのご予約ありがとうございます",
+        "badge": "予約確定",
         "hi": "{name}様",
         "thanks": "この度はご予約いただき、誠にありがとうございます。コーチングセッションのご予約を以下の通り受付けました。",
         "seeYou": "{date} の {time}（JST）にお会いできるのを楽しみにしております。",
         "serviceBooked": "ご予約内容",
-        "serviceName": "無料コーチング",
+        "serviceName": "コーチング",
         "zoomLink": "Zoomリンク",
         "staff": "担当スタッフ",
         "staffName": "ジョナサン・リンチ",
+        "platform": "プラットフォーム",
+        "platformValue": "Zoom ビデオ会議",
+        "rescheduleText": "予約内容の確認・変更はこちら",
         "contact": "Googleカレンダーに事前に追加いただくか、開始時間になりましたらZoomリンクよりご参加ください\nご不明点や予約内容の変更をご希望の場合は、下記メールアドレスまでお気軽にご連絡ください。",
         "supportEmail": "support@j-global.com",
-        "addToCalendar": "Googleカレンダーに追加",
+        "addToCalendar": "カレンダーに追加",
         "teamName": "J-Globalチーム",
         "calendar": {
             "addToCalendar": "カレンダーに追加:",
@@ -20,6 +24,20 @@
             "outlook": "Outlook / Teams",
             "apple": "Apple カレンダー",
             "appleHint": "Apple カレンダーをご利用の方は、添付ファイルを開いてください"
-        }
+        },
+        "footerWebsite": "公式ウェブサイト",
+        "footerPrivacy": "プライバシーポリシー",
+        "footerCopyright": "グローバルリーダーを育成",
+        "dateTimeLabel": "日時",
+        "cancelledHeader": "予約がキャンセルされました",
+        "cancelledIntro": "以下のセッションは正常にキャンセルされました:",
+        "cancelledAction": "再度ご予約をご希望の場合は、ウェブサイトからお願いいたします。",
+        "cancelledSubject": "コーチングセッションのキャンセル通知",
+        "rescheduledSubject": "コーチングセッションの予約変更通知",
+        "rescheduledHeader": "予約が変更されました",
+        "rescheduledIntro": "ご予約のコーチングセッションが正常に変更されました。",
+        "originalDate": "元の日時",
+        "newDate": "新しい日時",
+        "changeBooking": "予約内容を変更"
     }
 }
