@@ -3,8 +3,13 @@
 import { useState } from "react";
 import { X, Copy } from "lucide-react";
 import { toast } from "sonner";
+import { Booking } from "@/app/[locale]/admin/page";
 
-export default function BookingDetailsModal({ booking }: { booking: any }) {
+type Props = {
+	booking: Booking;
+};
+
+export function BookingDetailsModal({ booking }: Props) {
 	const [open, setOpen] = useState(false);
 
 	const copy = (value: string) => {

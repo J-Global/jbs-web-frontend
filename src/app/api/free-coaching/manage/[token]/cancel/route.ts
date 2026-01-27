@@ -5,7 +5,7 @@ import { Resend } from "resend";
 import { NextRequest } from "next/server";
 import { loadServerMessages } from "../../../../../../../messages/server";
 
-export async function POST(req: NextRequest, { params }: { params: { token: string } }) {
+export async function POST(req: NextRequest, context: { params: Promise<{ token: string }> }) {
 	const locale = req.headers.get("x-locale") || "ja";
 	const messages = await loadServerMessages(locale);
 	function interpolate(template: string, values: Record<string, string>) {
@@ -13,7 +13,7 @@ export async function POST(req: NextRequest, { params }: { params: { token: stri
 	}
 
 	try {
-		const { token } = params;
+		const { token } = await context.params;
 
 		// 1️⃣ Validate token format
 		const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;

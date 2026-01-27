@@ -3,9 +3,9 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { Users, Calendar, Clock, TrendingUp, Mail, Phone, Video, ExternalLink, Ban, RefreshCw } from "lucide-react";
 import MessageModal from "@/app/components/admin/ModalMessage";
-import BookingDetailsModal from "@/app/components/admin/BookinDetails";
+import { BookingDetailsModal } from "@/app/components/admin/BookinDetails";
 
-type Booking = {
+export type Booking = {
 	id: string;
 	first_name: string;
 	last_name: string;
@@ -136,7 +136,6 @@ function Section({ title, bookings, bookingMap, now, highlightToday }: { title: 
 						<tbody className="divide-y divide-slate-200">
 							{bookings.map((b) => {
 								const isUpcoming = new Date(b.event_date) > now && b.status === "confirmed";
-								const isPast = new Date(b.event_date) <= now && b.status === "confirmed";
 								const isCancelled = b.status === "cancelled";
 
 								const originalBooking = b.original_booking_id ? bookingMap.get(b.original_booking_id) : null;

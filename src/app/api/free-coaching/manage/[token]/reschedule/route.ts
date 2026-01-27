@@ -8,7 +8,7 @@ import { isValidationError } from "@/app/utils/validation/ErrorValidator";
 import { Validators } from "@/app/utils/validation/validators";
 import { loadServerMessages } from "../../../../../../../messages/server";
 
-export async function POST(req: NextRequest, context: { params: { token: string } }) {
+export async function POST(req: NextRequest, context: { params: Promise<{ token: string }> }) {
 	const locale = req.headers.get("x-locale") || "ja";
 	const messages = await loadServerMessages(locale);
 	function interpolate(template: string, values: Record<string, string>) {
@@ -184,7 +184,7 @@ Zoom link: ${userZoomLink || ""}
 		const outlookUrl = `https://outlook.office.com/calendar/0/deeplink/compose?subject=Free+Coaching+Session&startdt=${newStart.toISOString()}&enddt=${newEnd.toISOString()}&body=Your+free+coaching+session&location=Online`;
 
 		// Generate ICS file
-		const generateICS = ({ start, end, title, description, location }: { start: Date; end: Date; title: string; description: string; location: string }) => {
+		const generateICS = ({ title, description, location }: { start: Date; end: Date; title: string; description: string; location: string }) => {
 			const formatICSDate = (d: Date) => d.toISOString().replace(/-|:|\.\d{3}/g, "") + "Z";
 			return ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//J Global Biz School//Coaching Session//EN", "CALSCALE:GREGORIAN", "METHOD:PUBLISH", "BEGIN:VEVENT", `UID:${crypto.randomUUID()}@j-globalbizschool.com`, `DTSTAMP:${formatICSDate(new Date())}`, `DTSTART:${formatICSDate(newStart)}`, `DTEND:${formatICSDate(newEnd)}`, `SUMMARY:${title}`, `DESCRIPTION:${description}`, `LOCATION:${location}`, "END:VEVENT", "END:VCALENDAR"].join("\r\n");
 		};

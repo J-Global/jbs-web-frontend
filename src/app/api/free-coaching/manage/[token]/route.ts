@@ -2,17 +2,17 @@
 import { query } from "@/utils/neon";
 import { NextRequest } from "next/server";
 
-export async function GET(req: NextRequest, context: { params: { token: string } }) {
+export async function GET(req: NextRequest, context: { params: Promise<{ token: string }> }) {
 	try {
-		const { token } = await context.params;
+		// Await the params Promise
+		const params = await context.params;
+		const token = params.token;
 
 		// 1️⃣ Validate token format
 		const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 		if (!uuidRegex.test(token)) {
-			return new Response(JSON.stringify({ error: "Invalid token format" }), {
-				status: 400,
-			});
+			return Response.json({ error: "Invalid token format" }, { status: 400 });
 		}
 
 		// 2️⃣ Fetch booking by cancellation token
@@ -40,9 +40,7 @@ export async function GET(req: NextRequest, context: { params: { token: string }
 		);
 
 		if (baseResult.rowCount === 0) {
-			return new Response(JSON.stringify({ error: "Booking not found" }), {
-				status: 404,
-			});
+			return Response.json({ error: "Booking not found" }, { status: 404 });
 		}
 
 		let booking = baseResult.rows[0];
@@ -95,35 +93,31 @@ export async function GET(req: NextRequest, context: { params: { token: string }
 		const canCancel = withinTimeLimit && booking.status === "confirmed";
 
 		// 6️⃣ Response
-		return new Response(
-			JSON.stringify({
-				booking: {
-					id: booking.id,
-					firstName: booking.first_name,
-					lastName: booking.last_name,
-					email: booking.email,
-					phoneNumber: booking.phone_number,
-					message: booking.message,
-					eventDate: booking.event_date,
-					status: booking.status,
-					zoomJoinUrl: booking.zoom_join_url,
-					createdAt: booking.created_at,
-					rescheduledAt: booking.rescheduled_at,
-					cancelledAt: booking.cancelled_at,
-					isRescheduledBooking,
-				},
-				canReschedule,
-				canCancel,
-				hoursUntilEvent: Math.round(hoursUntilEvent * 10) / 10,
-				isRedirectedFromOldBooking,
-			}),
-			{
-				status: 200,
-				headers: { "Content-Type": "application/json" },
+		const responseData = {
+			booking: {
+				id: booking.id,
+				firstName: booking.first_name,
+				lastName: booking.last_name,
+				email: booking.email,
+				phoneNumber: booking.phone_number,
+				message: booking.message,
+				eventDate: booking.event_date,
+				status: booking.status,
+				zoomJoinUrl: booking.zoom_join_url,
+				createdAt: booking.created_at,
+				rescheduledAt: booking.rescheduled_at,
+				cancelledAt: booking.cancelled_at,
+				isRescheduledBooking,
 			},
-		);
+			canReschedule,
+			canCancel,
+			hoursUntilEvent: Math.round(hoursUntilEvent * 10) / 10,
+			isRedirectedFromOldBooking,
+		};
+
+		return Response.json(responseData, { status: 200 });
 	} catch (error) {
 		console.error("[GET Booking Error]", error);
-		return new Response(JSON.stringify({ error: "Internal server error" }), { status: 500 });
+		return Response.json({ error: "Internal server error", details: error instanceof Error ? error.message : String(error) }, { status: 500 });
 	}
 }

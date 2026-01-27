@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { useParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { format, Locale } from "date-fns";
+import { format, type Locale } from "date-fns";
 import { ja, enUS } from "date-fns/locale";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
@@ -14,99 +14,159 @@ import { useLocale, useTranslations } from "next-intl";
 import LanguageSwitcher from "@/app/components/LanguageSwitcher";
 import { Link } from "@/i18n/navigation";
 
+/* ───────────────────── Types ───────────────────── */
+
+interface Booking {
+	firstName: string;
+	lastName: string;
+	eventDate: string; // ISO
+	zoomJoinUrl?: string | null;
+	status: string;
+}
+
+interface ManageBookingResponse {
+	booking: Booking;
+	canReschedule: boolean;
+	canCancel: boolean;
+}
+
+interface AvailableSlotsResponse {
+	availableSlots: string[];
+}
+
+/* ───────────────────── Page ───────────────────── */
+
 export default function ManageBookingPage() {
-	const params = useParams();
+	const params = useParams<{ token: string }>();
 	const locale = useLocale();
 	const t = useTranslations("coaching.manage");
-	const token = params.token as string;
+	const token = params.token;
 
-	const localeMap: Record<string, Locale> = { en: enUS, ja: ja };
-	const dateFnsLocale = localeMap[locale] || enUS;
+	const localeMap: Record<string, Locale> = { en: enUS, ja };
+	const dateFnsLocale = localeMap[locale] ?? enUS;
 
-	const [loading, setLoading] = useState(true);
-	const [booking, setBooking] = useState<any>(null);
-	const [canReschedule, setCanReschedule] = useState(false);
-	const [canCancel, setCanCancel] = useState(false);
+	const [loading, setLoading] = useState<boolean>(true);
+	const [booking, setBooking] = useState<Booking | null>(null);
+	const [canReschedule, setCanReschedule] = useState<boolean>(false);
+	const [canCancel, setCanCancel] = useState<boolean>(false);
 	const [error, setError] = useState<string | null>(null);
 
-	const [showReschedule, setShowReschedule] = useState(false);
+	const [showReschedule, setShowReschedule] = useState<boolean>(false);
 	const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
 	const [selectedTime, setSelectedTime] = useState<string | null>(null);
 	const [availableTimes, setAvailableTimes] = useState<string[]>([]);
-	const [loadingTimes, setLoadingTimes] = useState(false);
-	const [submitting, setSubmitting] = useState(false);
-	const [showCancelConfirm, setShowCancelConfirm] = useState(false);
+	const [loadingTimes, setLoadingTimes] = useState<boolean>(false);
+	const [submitting, setSubmitting] = useState<boolean>(false);
+	const [showCancelConfirm, setShowCancelConfirm] = useState<boolean>(false);
 	const [success, setSuccess] = useState<"reschedule" | "cancel" | null>(null);
+
+	/* ───────────── Fetch booking ───────────── */
 
 	useEffect(() => {
 		const fetchBooking = async () => {
 			try {
 				const res = await fetch(`/api/free-coaching/manage/${token}`);
-				const data = await res.json();
-				if (!res.ok) throw new Error(data.error || t("requestFailed"));
+				const data: ManageBookingResponse = await res.json();
+				console.log(data);
+
+				if (!res.ok) {
+					throw new Error(data ? t("requestFailed") : t("requestFailed"));
+				}
+
 				setBooking(data.booking);
 				setCanReschedule(data.canReschedule);
 				setCanCancel(data.canCancel);
-			} catch (err: any) {
-				setError(err.message);
+			} catch (err: unknown) {
+				setError(err instanceof Error ? err.message : t("requestFailed"));
 			} finally {
 				setLoading(false);
 			}
 		};
+
 		fetchBooking();
 	}, [token, t]);
 
+	/* ───────────── Fetch available slots ───────────── */
+
 	useEffect(() => {
 		if (!selectedDate) return;
+
 		setLoadingTimes(true);
+
 		fetch("/api/free-coaching/available-slots/", {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({ date: format(selectedDate, "yyyy-MM-dd") }),
+			body: JSON.stringify({
+				date: format(selectedDate, "yyyy-MM-dd"),
+			}),
 		})
 			.then((res) => res.json())
-			.then((data) => setAvailableTimes(data.availableSlots || []))
+			.then((data: AvailableSlotsResponse) => {
+				setAvailableTimes(data.availableSlots ?? []);
+			})
 			.finally(() => setLoadingTimes(false));
 	}, [selectedDate]);
 
+	/* ───────────── Actions ───────────── */
+
 	const handleAction = async (type: "reschedule" | "cancel") => {
 		setSubmitting(true);
+
 		try {
 			const res = await fetch(`/api/free-coaching/manage/${token}/${type}`, {
 				method: "POST",
-				headers: { "Content-Type": "application/json", "x-locale": locale },
-				body: type === "reschedule" ? JSON.stringify({ date: format(selectedDate!, "yyyy-MM-dd"), time: selectedTime }) : null,
+				headers: {
+					"Content-Type": "application/json",
+					"x-locale": locale,
+				},
+				body:
+					type === "reschedule"
+						? JSON.stringify({
+								date: format(selectedDate as Date, "yyyy-MM-dd"),
+								time: selectedTime,
+							})
+						: null,
 			});
+
 			if (!res.ok) throw new Error();
+
 			setSuccess(type);
-		} catch (err) {
+		} catch {
 			toast.error(t("requestFailed"));
 			setSubmitting(false);
 		}
 	};
 
-	if (loading)
+	/* ───────────── Loading ───────────── */
+
+	if (loading) {
 		return (
 			<div className="min-h-screen flex items-center justify-center bg-gray-50">
 				<FaSpinner className="animate-spin text-[#d74100] w-8 h-8" />
 			</div>
 		);
+	}
 
-	// Render error page if fetch failed
-	if (error)
+	/* ───────────── Error ───────────── */
+
+	if (error) {
 		return (
 			<div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-4 text-center">
 				<h1 className="text-3xl font-bold text-gray-900 mb-4">Oops!</h1>
-				<p className="text-gray-500 mb-6">{error || "This booking does not exist."}</p>
+				<p className="text-gray-500 mb-6">{error}</p>
 				<Link href="/" className="px-8 py-3 bg-slate-900 text-white rounded-xl font-semibold hover:bg-slate-800 transition-all">
 					Return Home
 				</Link>
 			</div>
 		);
+	}
+
+	if (!booking) return null;
+
+	/* ───────────── UI ───────────── */
 
 	return (
 		<div className="min-h-screen bg-gray-50 flex flex-col items-center pb-20">
-			{/* Header */}
 			<header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100 px-6 py-3">
 				<div className="max-w-7xl mx-auto flex justify-between items-center">
 					<Link href="/">
@@ -129,15 +189,16 @@ export default function ManageBookingPage() {
 						</motion.div>
 					) : !showReschedule ? (
 						<motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
-							{/* Booking Info */}
 							<div className="bg-white rounded-3xl shadow-sm border border-gray-200 overflow-hidden">
 								<div className="p-8 sm:p-12">
 									<h1 className="text-2xl font-bold text-gray-900 mb-10">{t("pageTitle")}</h1>
+
 									<div className="grid md:grid-cols-2 gap-12">
 										<div className="space-y-8">
 											<InfoRow icon={<FaUser className="text-[#d74100]" />} label={t("clientName")} value={`${booking.firstName} ${booking.lastName}`} />
 											<InfoRow icon={<FaCalendarAlt className="text-[#d74100]" />} label={t("coachingDate")} value={new Date(booking.eventDate).toLocaleString(locale, { dateStyle: "full", timeStyle: "short" })} />
 										</div>
+
 										<div className="space-y-8">
 											<InfoRow
 												icon={<FaVideo className="text-[#d74100]" />}
@@ -158,7 +219,6 @@ export default function ManageBookingPage() {
 								</div>
 							</div>
 
-							{/* Action Buttons */}
 							<div className="flex flex-col sm:flex-row gap-4">
 								{canReschedule && (
 									<button onClick={() => setShowReschedule(true)} className="flex-2 bg-linear-to-r from-[#d74100] to-[#ff5a1f] text-white py-4 px-8 rounded-2xl font-bold shadow-lg hover:shadow-orange-100 transition-all">
@@ -174,22 +234,21 @@ export default function ManageBookingPage() {
 						</motion.div>
 					) : (
 						<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-white p-8 sm:p-12 rounded-3xl shadow-sm border border-gray-200">
-							{/* Back button */}
 							<button onClick={() => setShowReschedule(false)} className="mb-10 flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-gray-900 transition-colors">
 								<FaArrowLeft /> {t("backBtn")}
 							</button>
 
-							{/* Calendar + Times */}
 							<div className="grid lg:grid-cols-[350px_1fr] gap-12">
 								<div className="space-y-6">
 									<h2 className="text-xl font-bold text-gray-900">{t("selectDate")}</h2>
 									<div className="bg-gray-50 p-4 rounded-2xl border border-gray-100 flex justify-center">
-										<DayPicker mode="single" selected={selectedDate} onSelect={setSelectedDate} disabled={{ before: new Date() }} locale={dateFnsLocale} modifiersClassNames={{ selected: "bg-[#d74100] text-white rounded-lg", today: "text-[#d74100] font-bold underline" }} />
+										<DayPicker mode="single" selected={selectedDate} onSelect={setSelectedDate} disabled={{ before: new Date() }} locale={dateFnsLocale} />
 									</div>
 								</div>
 
 								<div className="space-y-6">
 									<h2 className="text-xl font-bold text-gray-900">{t("availableTimes")}</h2>
+
 									{loadingTimes ? (
 										<div className="py-10 flex justify-center">
 											<FaSpinner className="animate-spin text-[#d74100]" />
@@ -208,7 +267,6 @@ export default function ManageBookingPage() {
 								</div>
 							</div>
 
-							{/* Confirm Button */}
 							<div className="mt-12 pt-8 border-t border-gray-100 flex justify-end">
 								<button onClick={() => handleAction("reschedule")} disabled={!selectedTime || submitting} className="w-full sm:w-auto px-12 py-4 bg-linear-to-r from-[#d74100] to-[#ff5a1f] disabled:from-gray-200 disabled:to-gray-200 disabled:text-gray-400 text-white rounded-2xl font-bold shadow-xl transition-all">
 									{submitting ? t("updating") : t("confirmReschedule")}
@@ -219,37 +277,28 @@ export default function ManageBookingPage() {
 				</AnimatePresence>
 			</div>
 
-			{/* Cancel Modal */}
-			{/* Cancel Modal */}
 			{showCancelConfirm && (
 				<div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4">
 					<motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="bg-white p-8 rounded-3xl max-w-md w-full shadow-2xl">
 						<h3 className="text-xl font-bold text-gray-900 mb-2">{t("cancelModalTitle")}</h3>
 						<p className="text-gray-500 mb-8 text-sm leading-relaxed">{t("cancelModalText")}</p>
+
 						<div className="grid grid-cols-2 gap-3">
-							{/* Keep It Button */}
-							<button
-								onClick={() => setShowCancelConfirm(false)}
-								disabled={submitting} // prevent closing while submitting
-								className={`py-3 text-sm font-bold transition ${submitting ? "text-gray-300" : "text-gray-400 hover:text-gray-600"}`}
-							>
+							<button onClick={() => setShowCancelConfirm(false)} disabled={submitting} className={`py-3 text-sm font-bold transition ${submitting ? "text-gray-300" : "text-gray-400 hover:text-gray-600"}`}>
 								{t("keepIt")}
 							</button>
 
-							{/* Yes, Cancel Button */}
 							<button
 								onClick={async () => {
 									setSubmitting(true);
 									try {
-										await handleAction("cancel"); // call API
-										setShowCancelConfirm(false); // close modal on success
-									} catch (_) {
-										// error already shown in handleAction
+										await handleAction("cancel");
+										setShowCancelConfirm(false);
 									} finally {
-										setSubmitting(false); // stop loading
+										setSubmitting(false);
 									}
 								}}
-								disabled={submitting} // prevent double clicks
+								disabled={submitting}
 								className="py-3 bg-red-600 text-white rounded-xl font-bold hover:bg-red-700 transition flex justify-center items-center"
 							>
 								{submitting ? <FaSpinner className="animate-spin w-5 h-5" /> : t("yesCancel")}
@@ -262,7 +311,9 @@ export default function ManageBookingPage() {
 	);
 }
 
-function InfoRow({ icon, label, value }: { icon: any; label: string; value: any }) {
+/* ───────────────────── InfoRow ───────────────────── */
+
+function InfoRow({ icon, label, value }: { icon: ReactNode; label: string; value: ReactNode }) {
 	return (
 		<div className="flex items-start gap-4">
 			<div className="mt-1 text-lg">{icon}</div>
